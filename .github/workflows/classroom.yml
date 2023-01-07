@@ -15,45 +15,42 @@ jobs:
 
       # TODO build, publish to docker hub, deploy to k8s
 
-      #- name: Docker login
-      #  run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
 
-      #- name: Build images
-      #  timeout-minutes: 10
-      #  run: docker compose build
+      - name: Build images
+        timeout-minutes: 10
+        run: docker compose build
 
-      #- name: Docker Push
-      #  run: docker-compose push
+      - name: Docker Push
+        run: docker-compose push
 
-      #- name: Install Kubectl
-      #  uses: Azure/setup-kubectl@v3.1
+      - name: Install Kubectl
+        uses: Azure/setup-kubectl@v3.1
 
-      #- name: Create .kube folder
-      #  run: mkdir $HOME/.kube
+      - name: Create .kube folder
+        run: mkdir $HOME/.kube
 
-      #- name: Send YC config to K8S
-      #  run: cp ./k8s/config $HOME/.kube/config
+      - name: Send YC config to K8S
+        run: cp ./k8s/config $HOME/.kube/config
 
-      #- name: Wait 30 seconds
-      #  run: sleep 30
+      - name: Wait 30 seconds
+        run: sleep 30
 
-      #- name: Delete old Database pods
-      #  run: helm delete db1
+      - name: Delete old Database pods
+        run: helm delete db1
 
-      #- name: Delete old Service pods
-      #  run: helm delete serv1
+      - name: Delete old Service pods
+        run: helm delete serv1
 
-      #- name: Deploy DB to YC
-      #  run: helm install db1 k8s/db-chart
+      - name: Deploy DB to YC
+        run: helm install db1 k8s/db-chart
 
-      #- name: Deploy Services to YC
-      #  run: helm install serv1 k8s/services-chart
+      - name: Deploy Services to YC
+        run: helm install serv1 k8s/services-chart
 
-      #- name: Wait 60 seconds
-      #  run: sleep 60
-
-
-
+      - name: Wait 30 seconds
+        run: sleep 30
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master

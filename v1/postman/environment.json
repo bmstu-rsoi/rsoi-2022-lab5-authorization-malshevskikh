@@ -4,32 +4,32 @@
 	"values": [
 		{
 			"key": "serviceUrl",
-			"value": "",
+			"value": "51.250.10.71",
 			"enabled": true
 		},
 		{
 			"key": "identityProviderUrl",
-			"value": "",
+			"value": "https://dev-13094487.okta.com/oauth2/default",
 			"enabled": true
 		},
 		{
 			"key": "username",
-			"value": "",
+			"value": "DevMax@gmail.com",
 			"enabled": true
 		},
 		{
 			"key": "password",
-			"value": "",
+			"value": "HardPass6677!",
 			"enabled": true
 		},
 		{
 			"key": "clientId",
-			"value": "",
+			"value": "0oa7us14x9tGhLEJ45d7",
 			"enabled": true
 		},
 		{
 			"key": "clientSecret",
-			"value": "",
+			"value": "dxD1Lwpgn6NYMUsLST_zlFzkJHoA31W05ARn8Oqp",
 			"enabled": true
 		}
 	],

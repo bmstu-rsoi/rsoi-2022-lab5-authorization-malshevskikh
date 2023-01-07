@@ -34,6 +34,9 @@ jobs:
       - name: Send YC config to K8S
         run: cp ./k8s/config $HOME/.kube/config
 
+      - name: Wait 30 seconds
+        run: sleep 30
+
       - name: Delete old Database pods
         run: helm delete db1
 

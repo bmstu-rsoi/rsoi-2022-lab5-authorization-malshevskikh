@@ -163,7 +163,7 @@ def gateway_get_all_tickets_and_buy(request):
                 buy_ticket = requests.post("http://ticket-service:8070/api/v1/tick", headers={"X-User-Name": user}, data=d)
                 if buy_ticket.status_code != 201:
                     return JsonResponse({'message': 'can not pay for this flight'}, status=buy_ticket.status_code, safe=False)
-                #print("NOT OK!!!")
+
                 #print("can make ticket!")
                 type_of_payment = request.data['paidFromBalance']
                 price_data = request.data["price"]

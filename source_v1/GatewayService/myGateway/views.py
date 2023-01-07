@@ -108,6 +108,7 @@ def gateway_get_all_tickets_and_buy(request):
             if request.method == 'GET':
                 #print('OMG')
                 #valid_tickets = requests.get("http://127.0.0.1:8070/api/v1/tickets", headers={"X-User-Name": user})
+                print("ъъъъъъъъъъъ!!!!ЪЪЪЪЪЪ")
                 valid_tickets = requests.get("http://ticket-service:8070/api/v1/tickets", headers={"X-User-Name": user})
                 if valid_tickets.status_code == 200:
                     valid_tickets = valid_tickets.json()
@@ -158,7 +159,7 @@ def gateway_get_all_tickets_and_buy(request):
                 if (flight_is_valid.status_code != 200) or (flightNumber != flight_number):
                     return JsonResponse({'message': 'this flight does not exist'}, status=status.HTTP_404_NOT_FOUND, safe=False)
 
-                print("NOT OK!!!")
+                print("Td OK!!!")
                 #buy_ticket = requests.post("http://127.0.0.1:8070/api/v1/tick", headers={"X-User-Name": user }, data=d)
                 buy_ticket = requests.post("http://ticket-service:8070/api/v1/tick", headers={"X-User-Name": user}, data=d)
                 if buy_ticket.status_code != 201:

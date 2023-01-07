@@ -43,14 +43,17 @@ jobs:
       - name: Delete old Service pods
         run: helm delete serv1
 
+      - name: Wait 30 seconds
+        run: sleep 30
+
       - name: Deploy DB to YC
         run: helm install db1 k8s/db-chart
 
       - name: Deploy Services to YC
         run: helm install serv1 k8s/services-chart
 
-      - name: Wait 30 seconds
-        run: sleep 30
+      - name: Wait 200 seconds
+        run: sleep 200
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master

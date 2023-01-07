@@ -18,64 +18,74 @@ import jwt
 def gateway_get_user_info(request):
     print('ok')
     list_of_tickets = []
-    user = request.headers.get('X-User-Name')
-    if user is not None:
-        #valid_tickets = requests.get("http://127.0.0.1:8070/api/v1/tickets", headers={"X-User-Name": user })
-        valid_tickets = requests.get("http://ticket-service:8070/api/v1/tickets", headers={"X-User-Name": user})
-        #return JsonResponse(valid_tickets.json(), status=valid_tickets.status_code, safe=False)
-        print(valid_tickets)
-        if valid_tickets.status_code == 200:
-            print("vvvvv:", valid_tickets)
-            valid_tickets = valid_tickets.json()
-            print("aaaaa:", valid_tickets)
-            #print(valid_tickets['flight_number'])
-            for i in valid_tickets:
-                flight_number = i['flight_number']
-                #valid_flights = requests.get("http://127.0.0.1:8060/api/v1/flights/{}".format(flight_number))
-                valid_flights = requests.get("http://flight-service:8060/api/v1/flights/{}".format(flight_number))
-                if valid_flights.status_code == 200:
-                    print("dddd:", valid_flights)
-                    valid_flights = valid_flights.json()
-
-                    print("dddd:", valid_flights)
-                    print(type(valid_flights))
-                    #print(valid_flights.from_airport_id)
-                    ticket_uid = i['ticket_uid']
+    token = request.META.get('HTTP_AUTHORIZATION')
+    print("token: ", token)
+    if token is not None:
+        new_token = token[7:]
+        print("new_token:(",new_token,")")
+        decoded = jwt.decode(new_token, options={"verify_signature": False})  # works in PyJWT >= v2.0
+        print(decoded)
+        user = decoded["sub"]
+        #user = request.headers.get('X-User-Name')
+        if user is not None:
+            #valid_tickets = requests.get("http://127.0.0.1:8070/api/v1/tickets", headers={"X-User-Name": user })
+            valid_tickets = requests.get("http://ticket-service:8070/api/v1/tickets", headers={"X-User-Name": user})
+            #return JsonResponse(valid_tickets.json(), status=valid_tickets.status_code, safe=False)
+            print(valid_tickets)
+            if valid_tickets.status_code == 200:
+                print("vvvvv:", valid_tickets)
+                valid_tickets = valid_tickets.json()
+                print("aaaaa:", valid_tickets)
+                #print(valid_tickets['flight_number'])
+                for i in valid_tickets:
                     flight_number = i['flight_number']
-                    from_airport_id = valid_flights['fromAirport']
-                    print(from_airport_id)
-                    to_airport_id = valid_flights['toAirport']
-                    datetime = valid_flights['date']
-                    price = valid_flights['price']
-                    status_of_fl = i['status']
-                    my_flight_dto = {
-                        "ticketUid": ticket_uid,
-                        "flightNumber": flight_number,
-                        "fromAirport": from_airport_id,
-                        "toAirport": to_airport_id,
-                        "date": datetime,
-                        "price": price,
-                        "status": status_of_fl
+                    #valid_flights = requests.get("http://127.0.0.1:8060/api/v1/flights/{}".format(flight_number))
+                    valid_flights = requests.get("http://flight-service:8060/api/v1/flights/{}".format(flight_number))
+                    if valid_flights.status_code == 200:
+                        print("dddd:", valid_flights)
+                        valid_flights = valid_flights.json()
+
+                        print("dddd:", valid_flights)
+                        print(type(valid_flights))
+                        #print(valid_flights.from_airport_id)
+                        ticket_uid = i['ticket_uid']
+                        flight_number = i['flight_number']
+                        from_airport_id = valid_flights['fromAirport']
+                        print(from_airport_id)
+                        to_airport_id = valid_flights['toAirport']
+                        datetime = valid_flights['date']
+                        price = valid_flights['price']
+                        status_of_fl = i['status']
+                        my_flight_dto = {
+                            "ticketUid": ticket_uid,
+                            "flightNumber": flight_number,
+                            "fromAirport": from_airport_id,
+                            "toAirport": to_airport_id,
+                            "date": datetime,
+                            "price": price,
+                            "status": status_of_fl
+                        }
+                        list_of_tickets.append(my_flight_dto)
+                #privilege_of_user = requests.get("http://127.0.0.1:8050/api/v1/privilege", headers={"X-User-Name": user})
+                privilege_of_user = requests.get("http://bonus-service:8050/api/v1/privilege", headers={"X-User-Name": user })
+                if privilege_of_user.status_code == 200:
+                    privilege_of_user = privilege_of_user.json()
+                    balance = privilege_of_user['balance']
+                    status_of_pr = privilege_of_user['status']
+                    me_dto = {
+                        "tickets": list_of_tickets,
+                        "privilege": {
+                            "balance": balance,
+                            "status": status_of_pr
+                        }
                     }
-                    list_of_tickets.append(my_flight_dto)
-            #privilege_of_user = requests.get("http://127.0.0.1:8050/api/v1/privilege", headers={"X-User-Name": user})
-            privilege_of_user = requests.get("http://bonus-service:8050/api/v1/privilege", headers={"X-User-Name": user })
-            if privilege_of_user.status_code == 200:
-                privilege_of_user = privilege_of_user.json()
-                balance = privilege_of_user['balance']
-                status_of_pr = privilege_of_user['status']
-                me_dto = {
-                    "tickets": list_of_tickets,
-                    "privilege": {
-                        "balance": balance,
-                        "status": status_of_pr
-                    }
-                }
-                return JsonResponse(me_dto, status=status.HTTP_200_OK, safe=False)
-            return JsonResponse(privilege_of_user.json(), status=privilege_of_user.status_code)
-        return JsonResponse(valid_tickets.json(), status=valid_tickets.status_code)
+                    return JsonResponse(me_dto, status=status.HTTP_200_OK, safe=False)
+                return JsonResponse(privilege_of_user.json(), status=privilege_of_user.status_code)
+            return JsonResponse(valid_tickets.json(), status=valid_tickets.status_code)
+        else:
+            return JsonResponse({'message': 'user with this name doesnt exist'}, status=status.HTTP_400_BAD_REQUEST, safe=False)
     else:
-        return JsonResponse({'message': 'user with this name doesnt exist'}, status=status.HTTP_400_BAD_REQUEST, safe=False)
+        return JsonResponse({'message': 'не авторизован'}, status=status.HTTP_401_UNAUTHORIZED, safe=False)
 
 #Запросы для TicketService
 #Информация по всем билетам пользователя и покупка билета
@@ -87,8 +97,13 @@ def gateway_get_all_tickets_and_buy(request):
     list_of_tickets = []
     token = request.META.get('HTTP_AUTHORIZATION')
     print("token: ", token)
-    user = request.headers.get('X-User-Name')
     if token is not None:
+        new_token = token[7:]
+        print("new_token:(",new_token,")")
+        decoded = jwt.decode(new_token, options={"verify_signature": False})  # works in PyJWT >= v2.0
+        print(decoded)
+        user = decoded["sub"]
+        #user = request.headers.get('X-User-Name')
         if user is not None:
             if request.method == 'GET':
                 #print('OMG')
@@ -248,8 +263,14 @@ def gateway_get_ticket_info_and_cancel(request, ticketUid):
     print('ok')
     token = request.META.get('HTTP_AUTHORIZATION')
     print("token: ", token)
-    user = request.headers.get('X-User-Name')
+    print("request:", request)
     if token is not None:
+        new_token = token[7:]
+        print("new_token:(",new_token,")")
+        decoded = jwt.decode(new_token, options={"verify_signature": False})  # works in PyJWT >= v2.0
+        print(decoded)
+        user = decoded["sub"]
+        #user = request.headers.get('X-User-Name')
         if user is not None:
             if request.method == 'GET':
                 print("hhhhh")
@@ -306,6 +327,7 @@ def gateway_get_ticket_info_and_cancel(request, ticketUid):
         else:
             return JsonResponse({'message': 'user with this name doesnt exist'}, status=status.HTTP_400_BAD_REQUEST, safe=False)
     else:
+        print("Я туууут")
         return JsonResponse({'message': 'не авторизован'}, status=status.HTTP_401_UNAUTHORIZED, safe=False)
 
 
@@ -334,11 +356,15 @@ def gateway_get_all_flights(request):
 @api_view(['GET'])
 def gateway_get_privilege_info(request):
     token = request.META.get('HTTP_AUTHORIZATION')
-    print("token: ", token)
+    print("token:(", token,")")
     user = request.headers.get('X-User-Name')
     print("user: ",user)
     if token is not None:
-        user = request.headers.get('X-User-Name')
+        new_token = token[7:]
+        print("new_token:(",new_token,")")
+        decoded = jwt.decode(new_token, options={"verify_signature": False})  # works in PyJWT >= v2.0
+        print(decoded)
+        user = decoded["sub"]
         if user is not None:
             #privilege_of_user = requests.get("http://127.0.0.1:8050/api/v1/privilege_history", headers={"X-User-Name": user})
             privilege_of_user = requests.get("http://bonus-service:8050/api/v1/privilege_history", headers={"X-User-Name": user})

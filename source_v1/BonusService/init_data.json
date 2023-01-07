@@ -3,6 +3,15 @@
   "model": "myBonus.PrivilegeModel",
   "pk": 1,
   "fields": {
+    "username": "DevMax@gmail.com",
+    "status": "GOLD",
+    "balance": 5000
+  }
+},
+{
+  "model": "myBonus.PrivilegeModel",
+  "pk": 2,
+  "fields": {
     "username": "Test Max",
     "status": "GOLD",
     "balance": 5000

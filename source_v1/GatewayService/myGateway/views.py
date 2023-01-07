@@ -327,7 +327,6 @@ def gateway_get_ticket_info_and_cancel(request, ticketUid):
         else:
             return JsonResponse({'message': 'user with this name doesnt exist'}, status=status.HTTP_400_BAD_REQUEST, safe=False)
     else:
-        print("Я туууут")
         return JsonResponse({'message': 'не авторизован'}, status=status.HTTP_401_UNAUTHORIZED, safe=False)
 
 

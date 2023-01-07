@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "be850098-b8c1-4535-88c8-7365f8948018",
+		"_postman_id": "06e2765f-5974-42d6-a90c-6665e36b6e5c",
 		"name": "[rsoi][lab5] Flight Service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "976707"
+		"_exporter_id": "23344835"
 	},
 	"item": [
 		{
@@ -31,7 +31,19 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{clientSecret}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{clientId}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -71,12 +83,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{identityProviderUrl}}/oauth/token",
+							"raw": "{{identityProviderUrl}}/v1/token",
 							"host": [
 								"{{identityProviderUrl}}"
 							],
 							"path": [
-								"oauth",
+								"v1",
 								"token"
 							]
 						}

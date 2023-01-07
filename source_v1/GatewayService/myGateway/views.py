@@ -164,7 +164,7 @@ def gateway_get_all_tickets_and_buy(request):
                 if buy_ticket.status_code != 201:
                     return JsonResponse({'message': 'can not pay for this flight'}, status=buy_ticket.status_code, safe=False)
 
-                #print("can make ticket!")
+                print("can make ticket!")
                 type_of_payment = request.data['paidFromBalance']
                 price_data = request.data["price"]
                 tick = buy_ticket.json()
